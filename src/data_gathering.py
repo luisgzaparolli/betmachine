@@ -3,7 +3,6 @@ import requests
 import pandas as pd
 from selenium import webdriver
 import time
-import os
 
 
 def find_result(home_goals, away_goals):
@@ -103,11 +102,12 @@ def get_info(df,url):
     return df
 
 def get_info_streamlit(df,url):
-    driver = webdriver.Chrome('chromedriver.exe')
+    driver = webdriver.Firefox(executable_path='geckodriver.exe')
     driver.get(url)
     time.sleep(3)
     html = driver.page_source
     soup = BeautifulSoup(html, 'lxml')
+    driver.quit()
     tables = pd.read_html(html)
     teams = soup.find_all('h2', {'class': 'mt01e ac bold'})
     final = {}
@@ -169,5 +169,4 @@ def get_info_streamlit(df,url):
             '(', '').replace('%)', '')) / 100
     new_df=pd.DataFrame(final,index=[0])
     df = pd.concat([df, new_df])
-    driver.quit()
     return df
