@@ -3,7 +3,7 @@ from tpot import TPOTClassifier
 import pickle
 
 
-def data_prep(df):
+def data_prep(df,league,params):
     def encoder_result(x):
         if x == 'Home' or x == 'Win':
             return 1
@@ -14,15 +14,14 @@ def data_prep(df):
         else:
             return x
 
-    def encoder_teams(x):
-        with open('C:/Users/pedro/Projetos/betmachine/model/list_premiere.sav', 'rb') as fp:
-            teams = pickle.load(fp)
+    def encoder_teams(x,league,params):
+        teams = params.list_teams[league]
         return teams.index(x)
 
     df.drop(columns=['link'], inplace=True)
     df['result'] = df['result'].apply(lambda x: encoder_result(x))
-    df['home_team'] = df['home_team'].apply(lambda x: encoder_teams(x))
-    df['away_team'] = df['away_team'].apply(lambda x: encoder_teams(x))
+    df['home_team'] = df['home_team'].apply(lambda x: encoder_teams(x,league,params))
+    df['away_team'] = df['away_team'].apply(lambda x: encoder_teams(x,league,params))
     df['home_form_1'] = df['home_form_1'].apply(lambda x: encoder_result(x))
     df['home_form_2'] = df['home_form_2'].apply(lambda x: encoder_result(x))
     df['home_form_3'] = df['home_form_3'].apply(lambda x: encoder_result(x))
@@ -35,15 +34,15 @@ def data_prep(df):
     df['away_form_5'] = df['away_form_5'].apply(lambda x: encoder_result(x))
     return df
 
-def update_model():
-    df=pd.read_csv('../data/games.csv')
+def update_model(league,params):
+    df=pd.read_csv(f'../data/{league}/games.csv')
     new_df=df.copy()
-    new_df = data_prep(new_df)
+    new_df = data_prep(new_df,league,params)
     y = new_df.result
     X = new_df.drop(columns=['result'])
-    tpot = TPOTClassifier(generations=2, n_jobs=-1,population_size=X.shape[0], max_time_mins=2, verbosity=2)
+    tpot = TPOTClassifier(generations=5,population_size=int(X.shape[0]*0.9), max_time_mins=5, verbosity=2)
     tpot.fit(X,y)
-    with open('C:/Users/pedro/Projetos/betmachine/model/model.pkl', 'wb') as f:
+    with open(f'../data/{league}/model.pkl', 'wb') as f:
         pickle.dump(tpot.fitted_pipeline_, f)
 
 

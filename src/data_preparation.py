@@ -1,8 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 
-def get_links():
-    url = 'https://footystats.org/england/premier-league/fixtures'
+def get_links(url):
     html = requests.get(url, headers={'User-Agent': 'test'}).content
     soup = BeautifulSoup(html, 'lxml')
     games = soup.find_all('tr', {'class': 'match complete'})

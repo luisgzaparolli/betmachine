@@ -5,16 +5,19 @@ from data_gathering import get_info, get_info_streamlit
 from model.ger_model import update_model
 from model.best_param import optimize_param
 import pandas as pd
+from params import Params
+import multiprocessing as mp
 
-def main():
+def update_league(league):
+    params = Params()
     try:
-        df = pd.read_csv('../data/games.csv')
+        df = pd.read_csv(f'../data/{league}/games.csv')
         links_saved = list(df['link'])
-        links_online = get_links()
+        links_online = get_links(params.link_leagues[league])
         links_to_work = list(set(links_online) - set(links_saved))
     except:
         df = pd.DataFrame()
-        links_to_work = get_links()
+        links_to_work = get_links(params.link_leagues[league])
     if len(links_to_work) >= 1:
         for link in links_to_work:
             try:
@@ -26,9 +29,13 @@ def main():
                 print('error:', error)
                 print(link)
                 pass
-        df.to_csv('../data/games.csv', index=False)
-        update_model()
-        optimize_param()
+        df.to_csv(f'../data/{league}/games.csv', index=False)
+        update_model(league,params)
+        #optimize_param()
 
 if __name__ == '__main__':
-    main()
+    params=Params()
+    leagues = params.leagues
+    pool = mp.Pool(mp.cpu_count())
+    pool.map(update_league,leagues)
+    pool.close()
