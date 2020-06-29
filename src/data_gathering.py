@@ -3,6 +3,7 @@ import requests
 import pandas as pd
 from selenium import webdriver
 import time
+import numpy as np
 
 
 def find_result(home_goals, away_goals):
@@ -84,19 +85,24 @@ def get_info(df,url):
     final['away_form_3'] = away_form[2]
     final['away_form_4'] = away_form[3]
     final['away_form_5'] = away_form[4]
-    final['home_previous'] = float(
-        soup.find('div', {'class': 'w30 fl ac lh14e teamA pr r-w20'}).find('span', {'class': 'dark-gray'}).text.replace(
-            '(', '').replace('%)', '')) / 100
     try:
-        final['draw_previous'] = float(
-        soup.find('div', {'class': 'lh14e draw-line semi-bold'}).find('span', {'class': 'dark-gray'}).text.replace('(',
-                                                                                                                   '').replace(
-            '%)', '')) / 100
+        final['home_previous'] = float(
+            soup.find('div', {'class': 'w30 fl ac lh14e teamA pr r-w20'}).find('span', {'class': 'dark-gray'}).text.replace(
+                '(', '').replace('%)', '')) / 100
+        try:
+            final['draw_previous'] = float(
+            soup.find('div', {'class': 'lh14e draw-line semi-bold'}).find('span', {'class': 'dark-gray'}).text.replace('(',
+                                                                                                                       '').replace(
+                '%)', '')) / 100
+        except:
+            final['draw_previous'] = 0
+        final['away_previous'] = float(
+            soup.find('div', {'class': 'w30 fl ac lh14e teamB pr r-w20'}).find('span', {'class': 'dark-gray'}).text.replace(
+                '(', '').replace('%)', '')) / 100
     except:
-        final['draw_previous'] = 0
-    final['away_previous'] = float(
-        soup.find('div', {'class': 'w30 fl ac lh14e teamB pr r-w20'}).find('span', {'class': 'dark-gray'}).text.replace(
-            '(', '').replace('%)', '')) / 100
+        final[ 'home_previous' ] = np.nan
+        final[ 'draw_previous' ] = np.nan
+        final[ 'away_previous' ] = np.nan
     new_df=pd.DataFrame(final,index=[0])
     df = pd.concat([df, new_df])
     return df
@@ -154,19 +160,27 @@ def get_info_streamlit(df,url):
     final['away_form_3'] = away_form[2]
     final['away_form_4'] = away_form[3]
     final['away_form_5'] = away_form[4]
-    final['home_previous'] = float(
-        soup.find('div', {'class': 'w30 fl ac lh14e teamA pr r-w20'}).find('span', {'class': 'dark-gray'}).text.replace(
-            '(', '').replace('%)', '')) / 100
     try:
-        final['draw_previous'] = float(
-        soup.find('div', {'class': 'lh14e draw-line semi-bold'}).find('span', {'class': 'dark-gray'}).text.replace('(',
+        final[ 'home_previous' ] = float(
+            soup.find('div', {'class': 'w30 fl ac lh14e teamA pr r-w20'}).find('span',
+                                                                               {'class': 'dark-gray'}).text.replace(
+                '(', '').replace('%)', '')) / 100
+        try:
+            final[ 'draw_previous' ] = float(
+                soup.find('div', {'class': 'lh14e draw-line semi-bold'}).find('span',
+                                                                              {'class': 'dark-gray'}).text.replace('(',
                                                                                                                    '').replace(
-            '%)', '')) / 100
+                    '%)', '')) / 100
+        except:
+            final[ 'draw_previous' ] = 0
+        final[ 'away_previous' ] = float(
+            soup.find('div', {'class': 'w30 fl ac lh14e teamB pr r-w20'}).find('span',
+                                                                               {'class': 'dark-gray'}).text.replace(
+                '(', '').replace('%)', '')) / 100
     except:
-        final['draw_previous'] = 0
-    final['away_previous'] = float(
-        soup.find('div', {'class': 'w30 fl ac lh14e teamB pr r-w20'}).find('span', {'class': 'dark-gray'}).text.replace(
-            '(', '').replace('%)', '')) / 100
+        final[ 'home_previous' ] = np.nan
+        final[ 'draw_previous' ] = np.nan
+        final[ 'away_previous' ] = np.nan
     new_df=pd.DataFrame(final,index=[0])
     df = pd.concat([df, new_df])
     return df

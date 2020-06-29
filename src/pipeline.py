@@ -2,11 +2,14 @@ import sys
 sys.path.append('../')
 from data_preparation import get_links
 from data_gathering import get_info, get_info_streamlit
+from add_odds import add_odds_feature
 from model.ger_model import update_model
 from model.best_param import optimize_param
 import pandas as pd
 from params import Params
 import multiprocessing as mp
+import warnings
+warnings.filterwarnings('ignore')
 
 def update_league(league):
     params = Params()
@@ -29,6 +32,7 @@ def update_league(league):
                 print('error:', error)
                 print(link)
                 pass
+        df= add_odds_feature(df,league,params)
         df.to_csv(f'../data/{league}/games.csv', index=False)
         update_model(league,params)
         #optimize_param()

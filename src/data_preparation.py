@@ -8,8 +8,7 @@ def get_links(url):
     links = ['https://footystats.org/' + item.find('a')['href'] for item in games]
     return links
 
-def get_games():
-    url = 'https://footystats.org/england/premier-league/fixtures'
+def get_games(url):
     html = requests.get(url, headers={'User-Agent': 'test'}).content
     soup = BeautifulSoup(html, 'lxml')
     games=soup.find('div', {'class': 'full-matches-table mt1e'}).find_all('tr', {'class':'match incomplete'})

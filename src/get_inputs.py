@@ -165,9 +165,9 @@ def get_info_streamlit(df,url):
     driver.quit()
     return df
 
-def get_my_games():
+def get_my_games(url,params):
     df = pd.DataFrame()
-    links=get_games()
+    links=get_games(url)
     for link in links:
         df = get_info(df, link)
-    return df
+    return df.reset_index(drop=True)
