@@ -44,6 +44,8 @@ def get_info(df,url):
     teams = soup.find_all('h2', {'class': 'mt01e ac bold'})
     final = {}
     final['link']=url
+    final['league']=soup.find('a', {'class':'semi-bold'}).text
+    final['date']=soup.find('p', {'class':'semi-bold timezone-convert-match-h2h'}).text
     final['round']=int(soup.find('p',{'class':'mt05e'}).find('span').text)
     final['home_team'] = teams[0].text
     final['away_team'] = teams[1].text
@@ -109,6 +111,8 @@ def get_info_streamlit(df,url):
     teams = soup.find_all('h2', {'class': 'mt01e ac bold'})
     final = {}
     final['link'] = url
+    final['league']=soup.find('a', {'class':'semi-bold'}).text
+    final['date']=soup.find('p', {'class':'semi-bold timezone-convert-match-h2h'}).text
     final['round'] = int(soup.find('p', {'class': 'mt05e'}).find('span').text)
     final['home_team'] = teams[0].text
     final['away_team'] = teams[1].text
@@ -169,5 +173,8 @@ def get_my_games(url,params):
     df = pd.DataFrame()
     links=get_games(url)
     for link in links:
-        df = get_info(df, link)
+        try:
+            df = get_info(df, link)
+        except:
+            pass
     return df.reset_index(drop=True)

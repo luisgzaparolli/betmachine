@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import base64
 
 
 def calc_bet(df,fc,fa,pc,valor):
@@ -41,4 +42,12 @@ def calc_bet(df,fc,fa,pc,valor):
     df_1=df_1[['home_team','away_team','odds','aposta','valor']].reset_index(drop=True)
     return df_1
 
-
+def get_table_download_link(df):
+    """Generates a link allowing the data in a given panda dataframe to be downloaded
+    in:  dataframe
+    out: href string
+    """
+    csv = df.to_csv(index=False)
+    b64 = base64.b64encode(csv.encode()).decode()  # some strings <-> bytes conversions necessary here
+    href = f'<a href="data:file/csv;base64,{b64}" download="bet.csv">Download csv file</a>'
+    return href

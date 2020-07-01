@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from ger_bet import calc_bet
+from ger_bet import calc_bet,get_table_download_link
 
 @st.cache
 def load_data():
@@ -25,7 +25,9 @@ def main():
     valor=st.number_input(label='Valor a apostar',min_value=10,step=10)
     calc=st.button(label='Calcular')
     if calc:
-        st.table(calc_bet(df,fc,fa,pc,valor))
+        df_bet=calc_bet(df,fc,fa,pc,valor)
+        st.table(df_bet)
+        st.markdown(get_table_download_link(df_bet), unsafe_allow_html=True)
 
 
 if __name__ == '__main__':

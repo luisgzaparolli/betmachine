@@ -45,9 +45,9 @@ def update_model(league, params):
     new_df = data_prep(new_df, league, params)
     y = new_df.result
     X = new_df.drop(columns=[ 'result' ])
-    tpot = TPOTClassifier(generations=50, population_size=int(X.shape[0]*.9),verbosity=2,random_state=42,scoring="accuracy")
+    tpot = TPOTClassifier(memory='Auto',generations=50, population_size=50,verbosity=2,random_state=42,scoring="accuracy")
     tpot.fit(X, y)
-    clf = CalibratedClassifierCV(tpot, cv='prefit', method='sigmoid')
+    clf = CalibratedClassifierCV(tpot.fitted_pipeline_, cv='prefit', method='sigmoid')
     clf.fit(X, y)
     with open(f'../data/{league}/model.pkl', 'wb') as f:
         pickle.dump(clf, f)
@@ -58,6 +58,7 @@ def predict_proba(df, league, params):
         model = pickle.load(fp)
     new_df = df.copy()
     new_df = data_prep(df, league, params)
+    new_df=new_df.drop(columns=['date','league'])
     df_proba = pd.DataFrame(model.predict_proba(new_df), columns=[ 'Away', 'Draw', 'Home' ])
     df = pd.concat([ df, df_proba ], axis=1)
     df[ 'my_away' ] = df[ 'Away' ] * df[ 'odds_away' ]
