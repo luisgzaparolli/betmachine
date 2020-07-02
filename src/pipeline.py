@@ -34,7 +34,7 @@ def update_league(league):
                 pass
         df= add_odds_feature(df,league,params)
         df.to_csv(f'../data/{league}/games.csv', index=False)
-        update_model(league,params)
+        #update_model(league,params)
         #optimize_param()
 
 if __name__ == '__main__':

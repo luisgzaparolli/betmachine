@@ -59,6 +59,7 @@ def predict_proba(df, league, params):
     new_df = df.copy()
     new_df = data_prep(df, league, params)
     new_df=new_df.drop(columns=['date','league'])
+    print(df)
     df_proba = pd.DataFrame(model.predict_proba(new_df), columns=[ 'Away', 'Draw', 'Home' ])
     df = pd.concat([ df, df_proba ], axis=1)
     df[ 'my_away' ] = df[ 'Away' ] * df[ 'odds_away' ]
