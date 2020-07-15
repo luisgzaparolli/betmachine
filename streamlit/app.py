@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from ger_bet import calc_bet,get_table_download_link
 
-@st.cache
+@st.cache(allow_output_mutation=True)
 def load_data():
     return pd.read_csv('preview.csv')
 
@@ -12,9 +12,10 @@ df = load_data()
 
 def main():
     st.title('Betmachine')
+    add_multiselect = st.multiselect('Selecione as ligas:', list(df['league'].unique()))
     agree = st.checkbox("Visualizar jogos")
     if agree:
-        st.table(df[['home_team','away_team']])
+        st.table(df[(df['league'].isin(add_multiselect))][['home_team','away_team']])
     st.header('Alterar parâmetros')
     slider_fc = st.empty()
     fc = float(slider_fc.slider('Fator conservador %', 51, 80, 60, 1)/100)
@@ -27,6 +28,7 @@ def main():
     calc=st.button(label='Calcular')
     if calc:
         df_bet=calc_bet(df,fc,fa,pc,valor,dias)
+        df_bet=df_bet[(df_bet['league'].isin(add_multiselect))]
         st.table(df_bet)
         st.markdown(get_table_download_link(df_bet), unsafe_allow_html=True)
 

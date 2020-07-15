@@ -41,7 +41,7 @@ def calc_bet(df,fc,fa,pc,valor,dias):
             x = valor * (1 - pc) * (row[ 'probaxodds' ] / sum_arrojado)
         return x
 
-    df_1[ 'valor' ] = float(df_1.apply(lambda row: valor_apostado(row), axis=1)).round(2)
+    df_1[ 'valor' ] = (df_1.apply(lambda row: valor_apostado(row), axis=1)).round(2)
     df_1=df_1[['league','home_team','away_team','odds','proba','aposta','tipo','valor']].reset_index(drop=True)
     return df_1.sort_values(by='league')
 
