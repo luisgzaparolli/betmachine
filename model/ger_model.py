@@ -45,7 +45,7 @@ def update_model(league, params):
     new_df = data_prep(new_df, league, params)
     y = new_df.result
     X = new_df.drop(columns=[ 'result' ])
-    tpot = TPOTClassifier(memory='Auto',generations=50, population_size=50,verbosity=2,random_state=42,scoring="accuracy")
+    tpot = TPOTClassifier(memory='auto',generations=50, population_size=50,verbosity=2,random_state=42,scoring="accuracy")
     tpot.fit(X, y)
     clf = CalibratedClassifierCV(tpot.fitted_pipeline_, cv='prefit', method='sigmoid')
     clf.fit(X, y)
@@ -62,7 +62,7 @@ def predict_proba(df, league, params):
     print(df)
     df_proba = pd.DataFrame(model.predict_proba(new_df), columns=[ 'Away', 'Draw', 'Home' ])
     df = pd.concat([ df, df_proba ], axis=1)
-    df[ 'my_away' ] = df[ 'Away' ] * df[ 'odds_away' ]
-    df[ 'my_home' ] = df[ 'Home' ] * df[ 'odds_home' ]
-    df[ 'my_draw' ] = df[ 'Draw' ] * df[ 'odds_draw' ]
+    df[ 'my_away' ] = df[ 'Away' ] + df[ 'odds_away' ]/10
+    df[ 'my_home' ] = df[ 'Home' ] + df[ 'odds_home' ]/10
+    df[ 'my_draw' ] = df[ 'Draw' ] + df[ 'odds_draw' ]/10
     return df

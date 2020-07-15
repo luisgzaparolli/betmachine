@@ -1,6 +1,7 @@
 class Params:
     # leagues we have in db
-    leagues = [ 'premiere_league', 'la_liga', 'serie-a', 'bundesliga', 'championship','segunda_division', 'serie-b' ]
+    leagues = [ 'premiere_league', 'la_liga', 'serie-a', 'bundesliga', 'championship','segunda_division', 'serie-b', 'liga_nos',
+                'norway','persha']
 
     # link were we get info
     link_leagues = {'premiere_league': 'https://footystats.org/england/premier-league/fixtures',
@@ -9,7 +10,10 @@ class Params:
                     'bundesliga': 'https://footystats.org/germany/bundesliga/fixtures',
                     'championship': 'https://footystats.org/england/championship/fixtures',
                     'segunda_division': 'https://footystats.org/spain/segunda-division/fixtures',
-                    'serie-b': 'https://footystats.org/italy/serie-b/fixtures'}
+                    'serie-b': 'https://footystats.org/italy/serie-b/fixtures',
+                    'liga_nos':'https://footystats.org/portugal/liga-nos/fixtures',
+                    'norway': 'https://footystats.org/norway/eliteserien/fixtures',
+                    'persha': 'https://footystats.org/ukraine/persha-liga/fixtures'}
 
     # list unique of teams per league
     list_teams = {'premiere_league': [ 'Norwich City', 'Tottenham Hotspur', 'Watford',
@@ -48,7 +52,17 @@ class Params:
                   'serie-b': [ 'Benevento', 'Crotone', 'Cittadella', 'Spezia', 'Pordenone',
                                'Frosinone', 'Chievo', 'Salernitana', 'Pisa', 'Empoli',
                                'Virtus Entella', 'Perugia', 'Venezia', 'Pescara', 'Juve Stabia',
-                               'Cremonese', 'Ascoli', 'Cosenza', 'Trapani', 'Livorno' ]}
+                               'Cremonese', 'Ascoli', 'Cosenza', 'Trapani', 'Livorno' ],
+                  'liga_nos':['Porto','Benfica','Sporting CP','Sporting Braga','Famalicão',
+                             'Rio Ave FC','Vitória Guimarães','Moreirense FC','Gil Vicente','CS Marítimo',
+                             'Santa Clara','Boavista FC','Paços de Ferreira', 'CF Os Belenenses',
+                             'CD Tondela','Vitória Setúbal','Portimonense','CD Aves'],
+                    'norway':['Aalesund','Brann','FK Bodo - Glimt','Haugesund','Kristiansund',
+                                'Mjøndalen','Molde','Odd','Rosenborg','Sandefjord','Sarpsborg 08','Stabæk',
+                                'Start','Strømsgodset','Viking','Vålerenga'],
+                    'persha':['Ahrobiznes Volochysk','Avanhard','Balkany Zorya','Cherkashchyna-Akademiya',
+                             'Chornomorets', 'Hirnyk-Sport', 'Inhulets', 'Kremin', 'Metalist 1925 Kharkiv', 'Metalurh Zaporizhya',
+                             'Minai', 'Mykolaiv', 'Obolon-Brovar', 'Prykarpattia', 'Rukh Vynnyky', 'Volyn']}
 
     # links were we find odds of next games
     link_odds_next = {'premiere_league': 'https://www.betexplorer.com/soccer/england/premier-league/',
@@ -57,12 +71,15 @@ class Params:
                       'bundesliga': 'https://www.betexplorer.com/soccer/germany/bundesliga/',
                       'championship': 'https://www.betexplorer.com/soccer/england/championship/',
                       'segunda_division': 'https://www.betexplorer.com/soccer/spain/laliga2/',
-                      'serie-b': 'https://www.betexplorer.com/soccer/italy/serie-b/'
+                      'serie-b': 'https://www.betexplorer.com/soccer/italy/serie-b/',
+                      'liga_nos': 'https://www.betexplorer.com/soccer/portugal/primeira-liga/',
+                      'norway': 'https://www.betexplorer.com/soccer/norway/eliteserien/' ,
+                      'persha': 'https://www.betexplorer.com/soccer/ukraine/persha-liga/'
                       }
 
     """dict to link info of next games to odds df per league
-         keys: name of teams in games data frame
-         values: name of teams in odds data frame"""
+         keys: name of teams in odds data frame
+         values: name of teams in games data frame"""
     dict_odds_next = {'premiere_league': {'Arsenal': 'Arsenal',
                                          'Aston Villa': 'Aston Villa',
                                          'Bournemouth': 'AFC Bournemouth',
@@ -206,4 +223,54 @@ class Params:
                                  'Spezia': 'Spezia',
                                  'Trapani': 'Trapani',
                                  'Venezia': 'Venezia',
-                                 'Entella': 'Virtus Entella'}}
+                                 'Entella': 'Virtus Entella'},
+                        'liga_nos': {'Benfica': 'Benfica',
+                                     'Boavista': 'Boavista FC',
+                                     'Aves': 'CD Aves',
+                                     'Tondela': 'CD Tondela',
+                                     'Belenenses': 'CF Os Belenenses',
+                                     'Maritimo': 'CS Marítimo',
+                                     'Famalicao': 'Famalicão',
+                                     'Gil Vicente': 'Gil Vicente',
+                                     'Moreirense': 'Moreirense FC',
+                                     'Ferreira': 'Paços de Ferreira',
+                                     'Portimonense': 'Portimonense',
+                                     'FC Porto': 'Porto',
+                                     'Rio Ave': 'Rio Ave FC',
+                                     'Santa Clara': 'Santa Clara',
+                                     'Braga': 'Sporting Braga',
+                                     'Sporting': 'Sporting CP',
+                                     'Vitoria Guimaraes': 'Vitória Guimarães',
+                                     'Vitoria Setubal': 'Vitória Setúbal'},
+                        'norway':{'Aalesund': 'Aalesund',
+                                 'Brann': 'Brann',
+                                 'Bodo/Glimt': 'FK Bodo - Glimt',
+                                 'Haugesund': 'Haugesund',
+                                 'Kristiansund': 'Kristiansund',
+                                 'Mjondalen': 'Mjøndalen',
+                                 'Molde': 'Molde',
+                                 'Odd': 'Odd',
+                                 'Rosenborg': 'Rosenborg',
+                                 'Sandefjord': 'Sandefjord',
+                                 'Sarpsborg 08': 'Sarpsborg 08',
+                                 'Stabaek': 'Stabæk',
+                                 'Start': 'Start',
+                                 'Stromsgodset': 'Strømsgodset',
+                                 'Viking': 'Viking',
+                                 'Valerenga': 'Vålerenga'},
+                        'persha':{'Ahrobiznes Volochysk': 'Ahrobiznes Volochysk',
+                                 'Kramatorsk': 'Avanhard',
+                                 'Balkany': 'Balkany Zorya',
+                                 'Cherkashchyna': 'Cherkashchyna-Akademiya',
+                                 'Ch. Odessa': 'Chornomorets',
+                                 'Hirnyk-Sport': 'Hirnyk-Sport',
+                                 'Inhulets': 'Inhulets',
+                                 'Kremin': 'Kremin',
+                                 'Metalist 1925': 'Metalist 1925 Kharkiv',
+                                 'MFC Metalurh': 'Metalurh Zaporizhya',
+                                 'Minaj': 'Minai',
+                                 'Mykolaiv': 'Mykolaiv',
+                                 'Obolon Kyiv': 'Obolon-Brovar',
+                                 'Prykarpattya': 'Prykarpattia',
+                                 'Rukh Lviv': 'Rukh Vynnyky',
+                                 'Volyn Lutsk': 'Volyn'}}
