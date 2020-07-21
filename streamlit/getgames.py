@@ -10,10 +10,12 @@ import warnings
 warnings.filterwarnings('ignore')
 
 def main():
+    print('comecei')
     params=Params()
     leagues=params.leagues
     df = pd.DataFrame()
     for league in leagues:
+        print(league)
         try:
             df_league=get_my_games(params.link_leagues[league],params)
             if (df_league.shape[0] == 0) or (check_performance(league,params)==False):
@@ -25,6 +27,7 @@ def main():
         except:
             pass
     df=df.reset_index(drop=True)
+    df=df.dropna()
     df.to_csv('preview.csv',index=False)
 
 if __name__ == '__main__':

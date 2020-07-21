@@ -7,20 +7,23 @@ def calc_bet(df,fc,fa,pc,valor,dias):
     df['date']=pd.to_datetime(df['date'])
     off_set_date=datetime.date.today() + datetime.timedelta(days=dias)
     df=df[df['date']<=off_set_date]
-    df_rodada = df[
-        [ 'league','home_team', 'away_team', 'Away', 'odds_away', 'my_away', 'Draw', 'odds_draw', 'my_draw', 'Home',
-          'odds_home', 'my_home' ] ]
-    df_away = df_rodada[ ['league', 'home_team', 'away_team', 'Away', 'odds_away', 'my_away' ] ]
-    df_away[ 'aposta' ] = 'Away'
-    df_away.columns = [ 'league','home_team', 'away_team', 'proba', 'odds', 'probaxodds', 'aposta' ]
-    df_home = df_rodada[ [ 'league','home_team', 'away_team', 'Home', 'odds_home', 'my_home' ] ]
-    df_home[ 'aposta' ] = 'Home'
-    df_home.columns = [ 'league','home_team', 'away_team', 'proba', 'odds', 'probaxodds', 'aposta' ]
-    df_draw = df_rodada[ [ 'league','home_team', 'away_team', 'Draw', 'odds_draw', 'my_draw' ] ]
-    df_draw[ 'aposta' ] = 'Draw'
-    df_draw.columns = [ 'league','home_team', 'away_team', 'proba', 'odds', 'probaxodds', 'aposta' ]
-    df_1 = pd.concat([ df_away, df_draw, df_home ])
-    df_1 = df_1.reset_index(drop=True)
+    def check_result(row):
+        game=(df['home_team']==row['home_team']) & (df['away_team']==row['away_team'])
+        proba=list(df[game][['Home','Draw','Away']].values[0])
+        max_proba=proba.index(max(proba))
+        if max_proba == 0:
+            result=list(df[game][['Home','odds_home']].values[0])
+            result.append('Home')
+        elif max_proba == 1:
+            result = list(df[game][['Draw','odds_draw']].values[0])
+            result.append('Draw')
+        else:
+            result = list(df[game][['Away','odds_away']].values[0])
+            result.append('Away')
+        return result
+    df_1 = df[[ 'league','home_team', 'away_team']]
+    df_1[['proba','odds','aposta']]=df_1.apply(lambda row: check_result(row), axis=1,result_type="expand")
+    df_1.reset_index(drop=True,inplace=True)
     def set_aposta(x):
         if x >= fc:
             return 'conservador'

@@ -1,4 +1,5 @@
 class Params:
+    threshold=0.55
     # leagues we have in db
     leagues = [ 'inglaterra_1', 'inglaterra_2', 'espanha_1','espanha_2', 'italia_1', 'italia_2','alemanha_1',
                 'portugal_1','noruega_1','ucrania_1','suecia_1','russia_1','paraguai_1','coreia_do_sul_1',
